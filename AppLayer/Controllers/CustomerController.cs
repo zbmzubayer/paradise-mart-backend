@@ -116,14 +116,25 @@ namespace AppLayer.Controllers
             var dbUser = CustomerService.Get(guid);
             if(dbUser !=  null)
             {
+                
                 var httpRequest = HttpContext.Current.Request;
                 if (httpRequest.Files.Count > 0)
                 {
-                    string photoName = FileHandle.CustomerUploadPhoto(httpRequest, guid);
-                    var res = CustomerService.UploadPhoto(guid, photoName);
-                    return Request.CreateResponse(HttpStatusCode.Created, res);
+                    try
+                    {
+                        if (dbUser.Photo != null)
+                        {
+                            FileHandle.DeletePhoto("/CustomerPhotos/", dbUser.Photo);
+                        }
+                        string photoName = FileHandle.CustomerUploadPhoto(httpRequest, dbUser.Id);
+                        var res = CustomerService.UploadPhoto(guid, photoName);
+                        return Request.CreateResponse(HttpStatusCode.Created, res);
+                    }
+                    catch(Exception ex)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                    }
                 }
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
@@ -158,16 +169,17 @@ namespace AppLayer.Controllers
             var user = CustomerService.Get(guid);
             if (user != null)
             {
-                var photo = user.Photo;
-                if (photo != null)
+                if (user.Photo != null)
                 {
-                    var path = HttpContext.Current.Server.MapPath("/Uploads/CustomerPhotos/" + photo);
-                    FileInfo fileInfo = new FileInfo(path);
-                    if (fileInfo.Exists)
+                    try
                     {
-                        fileInfo.Delete();
+                        bool isDeleted = FileHandle.DeletePhoto("/CustomerPhotos/", user.Photo);
                         var res = CustomerService.DeletePhoto(guid);
                         return Request.CreateResponse(HttpStatusCode.OK, res);
+                    }
+                    catch (Exception ex)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
                     }
                 }
             }

@@ -119,11 +119,21 @@ namespace AppLayer.Controllers
                 var httpRequest = HttpContext.Current.Request;
                 if (httpRequest.Files.Count > 0)
                 {
-                    string photoName = FileHandle.AdminUploadPhoto(httpRequest, guid);
-                    var res = AdminService.UploadPhoto(guid, photoName);
-                    return Request.CreateResponse(HttpStatusCode.Created, res);
+                    try
+                    {
+                        if (dbUser.Photo != null)
+                        {
+                            FileHandle.DeletePhoto("/AdminPhotos/", dbUser.Photo);
+                        }
+                        string photoName = FileHandle.AdminUploadPhoto(httpRequest, dbUser.Id);
+                        var res = AdminService.UploadPhoto(guid, photoName);
+                        return Request.CreateResponse(HttpStatusCode.Created, res);
+                    }
+                    catch(Exception ex)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                    }
                 }
-                return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
@@ -156,19 +166,17 @@ namespace AppLayer.Controllers
         public HttpResponseMessage DeletePhoto(string guid)
         {
             var user = AdminService.Get(guid);
-            if (user != null)
+            if (user.Photo != null)
             {
-                var photo = user.Photo;
-                if (photo != null)
+                try
                 {
-                    var path = HttpContext.Current.Server.MapPath("/Uploads/AdminPhotos/" + photo);
-                    FileInfo fileInfo = new FileInfo(path);
-                    if (fileInfo.Exists)
-                    {
-                        fileInfo.Delete();
-                        var res = AdminService.DeletePhoto(guid);
-                        return Request.CreateResponse(HttpStatusCode.OK, res);
-                    }
+                    bool isDeleted = FileHandle.DeletePhoto("/AdminPhotos/", user.Photo);
+                    var res = AdminService.DeletePhoto(guid);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
                 }
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
