@@ -78,6 +78,10 @@ namespace BLL.Services
         {
             return DataAccessFactory.AdminOthersData().UploadPhoto(guid, photo);
         }
+        public static bool DeletePhoto(string guid)
+        {
+            return DataAccessFactory.AdminOthersData().DeletePhoto(guid);
+        }
         public static bool ChangePassword(string guid, ChangePassDTO changePasswordDTO)
         {
             var dbAdmin = DataAccessFactory.CustomerData().Get(guid);

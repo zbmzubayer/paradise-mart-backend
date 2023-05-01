@@ -151,6 +151,28 @@ namespace AppLayer.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
+        [HttpDelete]
+        [Route("api/customer/photo/delete/{guid}")]
+        public HttpResponseMessage DeletePhoto(string guid)
+        {
+            var user = CustomerService.Get(guid);
+            if (user != null)
+            {
+                var photo = user.Photo;
+                if (photo != null)
+                {
+                    var path = HttpContext.Current.Server.MapPath("/Uploads/CustomerPhotos/" + photo);
+                    FileInfo fileInfo = new FileInfo(path);
+                    if (fileInfo.Exists)
+                    {
+                        fileInfo.Delete();
+                        var res = CustomerService.DeletePhoto(guid);
+                        return Request.CreateResponse(HttpStatusCode.OK, res);
+                    }
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
         [HttpPatch]
         [Route("api/customer/change-password/{guid}")]
         public HttpResponseMessage ChangePassword(string guid, ChangePassDTO changePass)

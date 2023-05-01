@@ -5,6 +5,7 @@ using BLL.Helpers;
 using BLL.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -146,6 +147,28 @@ namespace AppLayer.Controllers
                     response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
                     //response.Content.Headers.ContentDisposition.FileName = file;
                     return response;
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+        [HttpDelete]
+        [Route("api/admin/photo/delete/{guid}")]
+        public HttpResponseMessage DeletePhoto(string guid)
+        {
+            var user = AdminService.Get(guid);
+            if (user != null)
+            {
+                var photo = user.Photo;
+                if (photo != null)
+                {
+                    var path = HttpContext.Current.Server.MapPath("/Uploads/AdminPhotos/" + photo);
+                    FileInfo fileInfo = new FileInfo(path);
+                    if (fileInfo.Exists)
+                    {
+                        fileInfo.Delete();
+                        var res = AdminService.DeletePhoto(guid);
+                        return Request.CreateResponse(HttpStatusCode.OK, res);
+                    }
                 }
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);

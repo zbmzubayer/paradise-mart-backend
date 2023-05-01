@@ -54,6 +54,12 @@ namespace DAL.Repos
             dbAdmin.Photo = photo;
             return db.SaveChanges() > 0;
         }
+        public bool DeletePhoto(string guid)
+        {
+            var user = Get(guid);
+            user.Photo = null;
+            return db.SaveChanges() > 0;
+        }
         public bool ChangePassword(string guid, string password)
         {
             var admin = Get(guid);

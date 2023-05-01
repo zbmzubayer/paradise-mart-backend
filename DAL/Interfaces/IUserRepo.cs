@@ -11,6 +11,7 @@ namespace DAL.Interfaces
         TYPE Get(int id);
         TYPE GetByEmail(string email);
         bool UploadPhoto(string guid, string photo);
+        bool DeletePhoto(string guid);
         bool ChangePassword(string guid, string password);
     }
 }
