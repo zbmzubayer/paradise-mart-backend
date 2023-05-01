@@ -25,8 +25,7 @@ namespace DAL.Repos
         }
         public bool Update(Admin obj)
         {
-            var exAdmin = Get(obj.Id);
-            exAdmin.Photo = obj.Photo;
+            var exAdmin = Get(obj.Guid);
             exAdmin.Name = obj.Name;
             exAdmin.Email = obj.Email;
             exAdmin.Phone = obj.Phone;
@@ -49,11 +48,19 @@ namespace DAL.Repos
         {
             return db.Admins.FirstOrDefault(a => a.Email == email);
         }
+        public bool UploadPhoto(string guid, string photo)
+        {
+            var dbAdmin = Get(guid);
+            dbAdmin.Photo = photo;
+            return db.SaveChanges() > 0;
+        }
         public bool ChangePassword(string guid, string password)
         {
             var admin = Get(guid);
             admin.Password = password;
             return db.SaveChanges() > 0;
         }
+
+        
     }
 }

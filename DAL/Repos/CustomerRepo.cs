@@ -23,11 +23,9 @@ namespace DAL.Repos
         {
             return db.Customers.FirstOrDefault(c => c.Guid == guid);
         }
-        
         public bool Update(Customer obj)
         {
-            var exCustomer = Get(obj.Id);
-            exCustomer.Photo = obj.Photo;
+            var exCustomer = Get(obj.Guid);
             exCustomer.Name = obj.Name;
             exCustomer.Email = obj.Email;
             exCustomer.Phone = obj.Phone;
@@ -51,6 +49,12 @@ namespace DAL.Repos
         {
             var customer = (from c in db.Customers where c.Email.Equals(email) select c).FirstOrDefault();
             return customer;
+        }
+        public bool UploadPhoto(string guid, string photo)
+        {
+            var exCustomer = Get(guid);
+            exCustomer.Photo = photo;
+            return db.SaveChanges() > 0;
         }
         public bool ChangePassword(string guid, string password)
         {

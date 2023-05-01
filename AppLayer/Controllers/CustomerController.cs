@@ -6,7 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web.ApplicationServices;
+using System.Web;
 using System.Web.Http;
+using BLL.Helpers;
+using System.Net.Http.Headers;
+using System.IO;
 
 namespace AppLayer.Controllers
 {
@@ -104,6 +109,48 @@ namespace AppLayer.Controllers
             }
         }
         // Others
+        [HttpPost]
+        [Route("api/customer/photo/upload/{guid}")]
+        public HttpResponseMessage FileUpload(string guid)
+        {
+            var dbUser = CustomerService.Get(guid);
+            if(dbUser !=  null)
+            {
+                var httpRequest = HttpContext.Current.Request;
+                if (httpRequest.Files.Count > 0)
+                {
+                    string photoName = FileHandle.CustomerUploadPhoto(httpRequest, guid);
+                    var res = CustomerService.UploadPhoto(guid, photoName);
+                    return Request.CreateResponse(HttpStatusCode.Created, res);
+                }
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+        [HttpGet]
+        [Route("api/customer/photo/{guid}")]
+        public HttpResponseMessage GetPhoto(string guid)
+        {
+            var user = CustomerService.Get(guid);
+            if(user != null)
+            {
+                if (user.Photo != null)
+                {
+                    var rootPath = HttpContext.Current.Server.MapPath("/Uploads/CustomerPhotos/");
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+                    var fileFullPath = System.IO.Path.Combine(rootPath, user.Photo);
+                    byte[] bfile = System.IO.File.ReadAllBytes(fileFullPath);
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream(bfile);
+                    response.Content = new ByteArrayContent(bfile);
+                    // response.Content = new StreamContent(ms);
+                    //response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                    //response.Content.Headers.ContentDisposition.FileName = file;
+                    return response;
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
         [HttpPatch]
         [Route("api/customer/change-password/{guid}")]
         public HttpResponseMessage ChangePassword(string guid, ChangePassDTO changePass)

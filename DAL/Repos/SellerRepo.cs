@@ -26,7 +26,6 @@ namespace DAL.Repos
         public bool Update(Seller obj)
         {
             var exSeller = Get(obj.Guid);
-            exSeller.Photo = obj.Photo;
             exSeller.Name = obj.Name;
             exSeller.Email = obj.Email;
             exSeller.Phone = obj.Phone;
@@ -50,6 +49,12 @@ namespace DAL.Repos
         public Seller GetByEmail(string email)
         {
             return db.Sellers.FirstOrDefault(s => s.Email == email);
+        }
+        public bool UploadPhoto(string guid, string photo)
+        {
+            var dbSeller = Get(guid);
+            dbSeller.Photo = photo;
+            return db.SaveChanges() > 0;
         }
         public bool ChangePassword(string guid, string password)
         {

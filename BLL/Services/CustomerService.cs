@@ -87,6 +87,10 @@ namespace BLL.Services
             var mapper = new Mapper(cfg);
             return mapper.Map<CustomerDTO>(data);
         }
+        public static bool UploadPhoto(string guid, string photo)
+        {
+            return DataAccessFactory.CustomerOthersData().UploadPhoto(guid, photo);
+        }
         public static bool ChangePassword(string guid, ChangePassDTO changePasswordDTO)
         {
             var dbCustomer = DataAccessFactory.CustomerData().Get(guid);
