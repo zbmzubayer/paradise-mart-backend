@@ -9,11 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using BLL.DTOs.Admin;
 using BLL.DTOs.Customer;
+using BLL.Helpers;
 
 namespace BLL.Services
 {
     public class AdminService
     {
+        public static int iteration = 4;
         public static bool Create(AdminCreateDTO admin)
         {
             // MailService.AdminRegistration(admin.Name, admin.Email);
@@ -24,6 +26,8 @@ namespace BLL.Services
             var mapper = new Mapper(cfg);
             var mapped = mapper.Map<Admin>(admin);
             mapped.Guid = Guid.NewGuid().ToString("N");
+            mapped.Salt = PasswordHash.GenerateSalt();
+            mapped.Password = PasswordHash.GenerateHash(mapped.Password, mapped.Salt, iteration);
             mapped.CreatedAt = DateTime.Now;
             return DataAccessFactory.AdminData().Create(mapped);
         }
@@ -84,10 +88,12 @@ namespace BLL.Services
         }
         public static bool ChangePassword(string guid, ChangePassDTO changePasswordDTO)
         {
-            var dbAdmin = DataAccessFactory.CustomerData().Get(guid);
-            if (changePasswordDTO.CurrentPassword == dbAdmin.Password)
+            var dbUser = DataAccessFactory.CustomerData().Get(guid);
+            changePasswordDTO.CurrentPassword = PasswordHash.GenerateHash(changePasswordDTO.CurrentPassword, dbUser.Salt, iteration);
+            if (changePasswordDTO.CurrentPassword == dbUser.Password)
             {
-                return DataAccessFactory.AdminOthersData().ChangePassword(dbAdmin.Guid, changePasswordDTO.NewPassword);
+                changePasswordDTO.NewPassword = PasswordHash.GenerateHash(changePasswordDTO.NewPassword, dbUser.Salt, iteration);
+                return DataAccessFactory.CustomerOthersData().ChangePassword(dbUser.Guid, changePasswordDTO.NewPassword);
             }
             return false;
         }

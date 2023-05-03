@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.DTOs.Customer;
+using BLL.Helpers;
 using DAL;
 using DAL.Models;
 using System;
@@ -17,6 +18,7 @@ namespace BLL.Services
 {
     public class CustomerService
     {
+        public static int iteration = 4;
         public static bool Create(CustomerCreateDTO customer)
         {
             // MailService.CustomerRegistration(customer.Name, customer.Email);
@@ -28,6 +30,8 @@ namespace BLL.Services
             var mapper = new Mapper(cfg);
             var mapped = mapper.Map<Customer>(customer);
             mapped.Guid = Guid.NewGuid().ToString("N");
+            mapped.Salt = PasswordHash.GenerateSalt();
+            mapped.Password = PasswordHash.GenerateHash(mapped.Password, mapped.Salt, iteration);
             mapped.CreatedAt = DateTime.Now;
             return DataAccessFactory.CustomerData().Create(mapped);
         }
@@ -97,10 +101,12 @@ namespace BLL.Services
         }
         public static bool ChangePassword(string guid, ChangePassDTO changePasswordDTO)
         {
-            var dbCustomer = DataAccessFactory.CustomerData().Get(guid);
-            if(changePasswordDTO.CurrentPassword == dbCustomer.Password)
+            var dbUser = DataAccessFactory.CustomerData().Get(guid);
+            changePasswordDTO.CurrentPassword = PasswordHash.GenerateHash(changePasswordDTO.CurrentPassword, dbUser.Salt, iteration);
+            if(changePasswordDTO.CurrentPassword == dbUser.Password)
             {
-                return DataAccessFactory.CustomerOthersData().ChangePassword(dbCustomer.Guid, changePasswordDTO.NewPassword);
+                changePasswordDTO.NewPassword = PasswordHash.GenerateHash(changePasswordDTO.NewPassword, dbUser.Salt, iteration);
+                return DataAccessFactory.CustomerOthersData().ChangePassword(dbUser.Guid, changePasswordDTO.NewPassword);
             }
             return false;
         }
