@@ -38,6 +38,9 @@ namespace DAL.Models
         [MinLength(8)]
         public string Password { get; set; }
         [Required]
+        [StringLength(100)]
+        public string Salt { get; set; }
+        [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         // Customer (1) <---> (*) Order

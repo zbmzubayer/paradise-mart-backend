@@ -36,6 +36,9 @@ namespace DAL.Models
         [StringLength(100)]
         public string Password { get; set; }
         [Required]
+        [StringLength(100)]
+        public string Salt { get; set; }
+        [Required]
         [StringLength(30)]
         public string CompanyName { get; set; }
         [Required]
