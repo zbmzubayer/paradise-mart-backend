@@ -22,7 +22,7 @@ namespace BLL.Helpers
                     Directory.CreateDirectory(path);
                 }
                 var fileExt = System.IO.Path.GetExtension(posteFile.FileName);
-                var unixTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+                var unixTimestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 uniqueFileName = id + unixTimestamp + fileExt;
                 var filePath = System.IO.Path.Combine(path, uniqueFileName);
                 posteFile.SaveAs(filePath);
