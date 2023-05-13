@@ -95,8 +95,8 @@ namespace AppLayer.Controllers
             {
                 try
                 {
-                    CustomerService.Delete(guid);
-                    return Request.CreateResponse(HttpStatusCode.NoContent);
+                    var res = CustomerService.Delete(guid);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
                 }
                 catch (Exception ex)
                 {
@@ -106,6 +106,51 @@ namespace AppLayer.Controllers
             else
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+        }
+        // Customer + Orders
+        [HttpGet]
+        [Route("api/customers/{guid}/orders")]
+        public HttpResponseMessage GetWithOrders(string guid)
+        {
+            try
+            {
+                var data = CustomerService.GetWithOrders(guid);
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
+        // Customer + Reviews
+        [HttpGet]
+        [Route("api/customers/{guid}/reviews")]
+        public HttpResponseMessage GetWithReviews(string guid)
+        {
+            try
+            {
+                var data = CustomerService.GetWithReviews(guid);
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
+        // Customer + CustomerPayments
+        [HttpGet]
+        [Route("api/customers/{guid}/customer-payments")]
+        public HttpResponseMessage GetWithCustomerPayments(string guid)
+        {
+            try
+            {
+                var data = CustomerService.GetWithCustomerPayments(guid);
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
         // Others
@@ -218,6 +263,33 @@ namespace AppLayer.Controllers
             }
             MailService.ForgotPassword(dbCustomer.Name, dbCustomer.Email);
             return Request.CreateResponse(HttpStatusCode.OK);
+        }
+        [HttpPatch]
+        [Route("api/customer/change-email/{guid}")]
+        public HttpResponseMessage ChangeEmail(string guid, ChangeEmailDTO changeEmail)
+        {
+            var dbUser = CustomerService.Get(guid);
+            if (dbUser != null)
+            {
+                var existEmail = CustomerService.GetByEmail(changeEmail.Email);
+                if (existEmail != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { Message = "Email already taken" });
+                }
+                try
+                {
+                    var res = CustomerService.ChangeEmail(guid, changeEmail);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                }
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
         }
     }
 }

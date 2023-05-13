@@ -12,3 +12,5 @@ D:\Coding\Web Development\ASP.NET Project\paradise-mart-backend\DAL\obj\Debug\DA
 D:\Coding\Web Development\ASP.NET Project\paradise-mart-backend\DAL\obj\Debug\DAL.pdb
 D:\Coding\Web Development\ASP.NET Project\paradise-mart-backend\DAL\obj\Debug\DAL.Migrations.InitDB.resources
 D:\Coding\Web Development\ASP.NET Project\paradise-mart-backend\DAL\obj\Debug\DAL.csproj.GenerateResource.cache
+D:\Coding\Web Development\ASP.NET Project\paradise-mart-backend\DAL\obj\Debug\DAL.Migrations.SaltColumnAddedInUsersTables.resources
+D:\Coding\Web Development\ASP.NET Project\paradise-mart-backend\DAL\obj\Debug\DAL.Migrations.ReviewTableRatingColumnTypeChanged.resources

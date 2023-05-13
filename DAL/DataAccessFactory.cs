@@ -35,6 +35,10 @@ namespace DAL
         {
             return new SellerRepo();
         }
+        public static ISellerRepo<Seller> SellerIndividualData()
+        {
+            return new SellerRepo();
+        }
         public static IRepo<Product, string, bool> ProductData()
         {
             return new ProductRepo();
@@ -50,6 +54,22 @@ namespace DAL
         public static IRepo<Order, string, Order> OrderData()
         {
             return new OrderRepo();
+        }
+        public static IRepo<List<OrderDetail>, int, bool> OrderDetailData()
+        {
+            return new OrderDetailRepo();
+        }
+        public static IOrderRepo<Order> OrderIndividualData()
+        {
+            return new OrderRepo();
+        }
+        public static IRepo<Review, int, bool> ReviewData()
+        {
+            return new ReviewRepo();
+        }
+        public static IRepo<CustomerPayment, int, bool> CustomerPaymentData()
+        {
+            return new CustomerPaymentRepo();
         }
     }
 }

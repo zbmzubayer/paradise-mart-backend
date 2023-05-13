@@ -51,26 +51,35 @@
     <Compile Include="DTOs\Admin\AdminDTO.cs" />
     <Compile Include="DTOs\Category\CategoryDTO.cs" />
     <Compile Include="DTOs\Category\CategoryProductsDTO.cs" />
+    <Compile Include="DTOs\ChangeEmailDTO.cs" />
     <Compile Include="DTOs\ChangePassDTO.cs" />
+    <Compile Include="DTOs\CustomerPayment\CustomerPaymentDTO.cs" />
     <Compile Include="DTOs\Customer\CustomerCreateDTO.cs" />
+    <Compile Include="DTOs\Customer\CustomerCustomerPaymentsDTO.cs" />
     <Compile Include="DTOs\Customer\CustomerDTO.cs" />
+    <Compile Include="DTOs\Customer\CustomerOrdersDTO.cs" />
+    <Compile Include="DTOs\Customer\CustomerReviewsDTO.cs" />
     <Compile Include="DTOs\ForgotPassDTO.cs" />
     <Compile Include="DTOs\Order\OrderDetailDTO.cs" />
     <Compile Include="DTOs\Order\OrderDTO.cs" />
     <Compile Include="DTOs\Payment\PaymentDTO.cs" />
     <Compile Include="DTOs\Product\ProductDTO.cs" />
+    <Compile Include="DTOs\Review\ReviewDTO.cs" />
     <Compile Include="DTOs\Seller\SellerCreateDTO.cs" />
     <Compile Include="DTOs\Seller\SellerDTO.cs" />
     <Compile Include="DTOs\Seller\SellerProductsDTO.cs" />
     <Compile Include="Helpers\FileHandle.cs" />
+    <Compile Include="Helpers\PasswordHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdminService.cs" />
     <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\CustomerPaymentService.cs" />
     <Compile Include="Services\CustomerService.cs" />
     <Compile Include="Services\MailService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\PaymentService.cs" />
     <Compile Include="Services\ProductService.cs" />
+    <Compile Include="Services\ReviewService.cs" />
     <Compile Include="Services\SellerService.cs" />
   </ItemGroup>
   <ItemGroup>

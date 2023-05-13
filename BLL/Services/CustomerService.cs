@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.DTOs.Customer;
+using BLL.DTOs.CustomerPayment;
+using BLL.DTOs.Order;
+using BLL.DTOs.Review;
 using BLL.Helpers;
 using DAL;
 using DAL.Models;
@@ -70,7 +73,44 @@ namespace BLL.Services
         {
             return DataAccessFactory.CustomerData().Delete(guid);
         }
-        /* Others */
+        // Customer + Orders
+        public static CustomerOrdersDTO GetWithOrders(string guid)
+        {
+            var data = DataAccessFactory.CustomerData().Get(guid);
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Customer, CustomerOrdersDTO>();
+                c.CreateMap<Order, OrderDTO>();
+                c.CreateMap<OrderDetail, OrderDetailDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            return mapper.Map<CustomerOrdersDTO>(data);
+        }
+        // Customer + Reviews
+        public static CustomerReviewsDTO GetWithReviews(string guid)
+        {
+            var data = DataAccessFactory.CustomerData().Get(guid);
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Customer, CustomerReviewsDTO>();
+                c.CreateMap<Review, ReviewDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            return mapper.Map<CustomerReviewsDTO>(data);
+        }
+        // Customer + CustomerPayments
+        public static CustomerCustomerPaymentsDTO GetWithCustomerPayments(string guid)
+        {
+            var data = DataAccessFactory.CustomerData().Get(guid);
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Customer, CustomerCustomerPaymentsDTO>();
+                c.CreateMap<CustomerPayment, CustomerPaymentDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            return mapper.Map<CustomerCustomerPaymentsDTO>(data);
+        }
+        // Others
         public static CustomerDTO Get(int id)
         {
             var data = DataAccessFactory.CustomerOthersData().Get(id);
@@ -107,6 +147,16 @@ namespace BLL.Services
             {
                 changePasswordDTO.NewPassword = PasswordHash.GenerateHash(changePasswordDTO.NewPassword, dbUser.Salt, iteration);
                 return DataAccessFactory.CustomerOthersData().ChangePassword(dbUser.Guid, changePasswordDTO.NewPassword);
+            }
+            return false;
+        }
+        public static bool ChangeEmail(string guid, ChangeEmailDTO changeEmailDTO)
+        {
+            var dbUser = DataAccessFactory.CustomerData().Get(guid);
+            changeEmailDTO.Password = PasswordHash.GenerateHash(changeEmailDTO.Password, dbUser.Salt, iteration);
+            if (changeEmailDTO.Password == dbUser.Password)
+            {
+                return DataAccessFactory.CustomerOthersData().ChangeEmail(guid, changeEmailDTO.Email);
             }
             return false;
         }

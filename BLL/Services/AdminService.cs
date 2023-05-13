@@ -88,12 +88,22 @@ namespace BLL.Services
         }
         public static bool ChangePassword(string guid, ChangePassDTO changePasswordDTO)
         {
-            var dbUser = DataAccessFactory.CustomerData().Get(guid);
+            var dbUser = DataAccessFactory.AdminData().Get(guid);
             changePasswordDTO.CurrentPassword = PasswordHash.GenerateHash(changePasswordDTO.CurrentPassword, dbUser.Salt, iteration);
             if (changePasswordDTO.CurrentPassword == dbUser.Password)
             {
                 changePasswordDTO.NewPassword = PasswordHash.GenerateHash(changePasswordDTO.NewPassword, dbUser.Salt, iteration);
                 return DataAccessFactory.CustomerOthersData().ChangePassword(dbUser.Guid, changePasswordDTO.NewPassword);
+            }
+            return false;
+        }
+        public static bool ChangeEmail(string guid, ChangeEmailDTO changeEmailDTO)
+        {
+            var dbUser = DataAccessFactory.AdminData().Get(guid);
+            changeEmailDTO.Password = PasswordHash.GenerateHash(changeEmailDTO.Password, dbUser.Salt, iteration);
+            if (changeEmailDTO.Password == dbUser.Password)
+            {
+                return DataAccessFactory.AdminOthersData().ChangeEmail(guid, changeEmailDTO.Email);
             }
             return false;
         }

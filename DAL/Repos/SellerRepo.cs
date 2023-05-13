@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repos
 {
-    internal class SellerRepo : Repo, IRepo<Seller, string, bool>, IUserRepo<Seller>
+    internal class SellerRepo : Repo, IRepo<Seller, string, bool>, IUserRepo<Seller>, ISellerRepo<Seller>
     {
         public bool Create(Seller obj)
         {
@@ -62,10 +62,23 @@ namespace DAL.Repos
             user.Photo = null;
             return db.SaveChanges() > 0;
         }
+        public bool UploadLogo(string guid, string logo)
+        {
+            var dbSeller = Get(guid);
+            dbSeller.CompanyLogo = logo;
+            return db.SaveChanges() > 0;
+
+        }
         public bool ChangePassword(string guid, string password)
         {
             var seller = Get(guid);
             seller.Password = password;
+            return db.SaveChanges() > 0;
+        }
+        public bool ChangeEmail(string guid, string email)
+        {
+            var seller = Get(guid);
+            seller.Email = email;
             return db.SaveChanges() > 0;
         }
     }

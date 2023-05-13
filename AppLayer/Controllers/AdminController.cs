@@ -203,5 +203,32 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
         }
+        [HttpPatch]
+        [Route("api/admin/change-email/{guid}")]
+        public HttpResponseMessage ChangeEmail(string guid, ChangeEmailDTO changeEmail)
+        {
+            var dbUser = AdminService.Get(guid);
+            if (dbUser != null)
+            {
+                var existEmail = AdminService.GetByEmail(changeEmail.Email);
+                if (existEmail != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { Message = "Email already taken" });
+                }
+                try
+                {
+                    var res = AdminService.ChangeEmail(guid, changeEmail);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                }
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+        }
     }
 }

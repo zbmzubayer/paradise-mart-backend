@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BLL.DTOs.Customer;
 using BLL.DTOs.Product;
 using BLL.Helpers;
+using BLL.DTOs;
 
 namespace BLL.Services
 {
@@ -67,6 +68,18 @@ namespace BLL.Services
         {
             return DataAccessFactory.SellerData().Delete(guid);
         }
+        // Seller + Products
+        public static SellerProductsDTO GetWithProducts(string guid)
+        {
+            var data = DataAccessFactory.SellerData().Get(guid);
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Seller, SellerProductsDTO>();
+                c.CreateMap<Product, ProductDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            return mapper.Map<SellerProductsDTO>(data);
+        }
         // Others
         public static SellerDTO GetByEmail(string email)
         {
@@ -82,13 +95,17 @@ namespace BLL.Services
         {
             return DataAccessFactory.SellerOthersData().UploadPhoto(guid, photo);
         }
+        public static bool UploadLogo(string guid, string logo)
+        {
+            return DataAccessFactory.SellerIndividualData().UploadLogo(guid, logo);
+        }
         public static bool DeletePhoto(string guid)
         {
             return DataAccessFactory.SellerOthersData().DeletePhoto(guid);
         }
         public static bool ChangePassword(string guid, ChangePassDTO changePasswordDTO)
         {
-            var dbUser = DataAccessFactory.CustomerData().Get(guid);
+            var dbUser = DataAccessFactory.SellerData().Get(guid);
             changePasswordDTO.CurrentPassword = PasswordHash.GenerateHash(changePasswordDTO.CurrentPassword, dbUser.Salt, iteration);
             if (changePasswordDTO.CurrentPassword == dbUser.Password)
             {
@@ -97,17 +114,15 @@ namespace BLL.Services
             }
             return false;
         }
-        // Seller + Products
-        public static SellerProductsDTO GetWithProducts(string guid)
+        public static bool ChangeEmail(string guid, ChangeEmailDTO changeEmailDTO)
         {
-            var data = DataAccessFactory.SellerData().Get(guid);
-            var cfg = new MapperConfiguration(c =>
+            var dbUser = DataAccessFactory.SellerData().Get(guid);
+            changeEmailDTO.Password = PasswordHash.GenerateHash(changeEmailDTO.Password, dbUser.Salt, iteration);
+            if (changeEmailDTO.Password == dbUser.Password)
             {
-                c.CreateMap<Seller, SellerProductsDTO>();
-                c.CreateMap<Product, ProductDTO>();
-            });
-            var mapper = new Mapper(cfg);
-            return mapper.Map<SellerProductsDTO>(data);
+                return DataAccessFactory.SellerOthersData().ChangeEmail(guid, changeEmailDTO.Email);
+            }
+            return false;
         }
     }
 }

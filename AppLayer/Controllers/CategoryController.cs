@@ -58,13 +58,13 @@ namespace AppLayer.Controllers
         [Route("api/category/update")]
         public HttpResponseMessage Update(CategoryDTO category)
         {
-            var dbCustomer = CategoryService.Get(category.Id);
-            if (dbCustomer != null)
+            var dbCategory = CategoryService.Get(category.Id);
+            if (dbCategory != null)
             {
                 try
                 {
-                    CategoryService.Update(category);
-                    return Request.CreateResponse(HttpStatusCode.OK, category);
+                    var res = CategoryService.Update(category);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
                 }
                 catch (Exception ex)
                 {

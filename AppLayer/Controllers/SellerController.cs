@@ -95,8 +95,8 @@ namespace AppLayer.Controllers
             {
                 try
                 {
-                    SellerService.Delete(guid);
-                    return Request.CreateResponse(HttpStatusCode.NoContent);
+                    var res = SellerService.Delete(guid);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
                 }
                 catch (Exception ex)
                 {
@@ -145,6 +145,34 @@ namespace AppLayer.Controllers
                         return Request.CreateResponse(HttpStatusCode.Created, res);
                     }
                     catch(Exception ex)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                    }
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+        [HttpPost]
+        [Route("api/seller/logo/upload/{guid}")]
+        public HttpResponseMessage UploadLogo(string guid)
+        {
+            var dbUser = SellerService.Get(guid);
+            if (dbUser != null)
+            {
+                var httpRequest = HttpContext.Current.Request;
+                if (httpRequest.Files.Count > 0)
+                {
+                    try
+                    {
+                        if (dbUser.CompanyLogo != null)
+                        {
+                            FileHandle.DeletePhoto("/CompanyLogos/", dbUser.CompanyLogo);
+                        }
+                        string photoName = FileHandle.SellerUploadCompanyLogo(httpRequest, dbUser.Id);
+                        var res = SellerService.UploadLogo(guid, photoName);
+                        return Request.CreateResponse(HttpStatusCode.Created, res);
+                    }
+                    catch (Exception ex)
                     {
                         return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
                     }
@@ -209,6 +237,33 @@ namespace AppLayer.Controllers
                 try
                 {
                     var res = SellerService.ChangePassword(guid, changePass);
+                    return Request.CreateResponse(HttpStatusCode.OK, res);
+                }
+                catch (Exception ex)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+                }
+            }
+            else
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+            }
+        }
+        [HttpPatch]
+        [Route("api/seller/change-email/{guid}")]
+        public HttpResponseMessage ChangeEmail(string guid, ChangeEmailDTO changeEmail)
+        {
+            var dbUser = SellerService.Get(guid);
+            if (dbUser != null)
+            {
+                var existEmail = SellerService.GetByEmail(changeEmail.Email);
+                if (existEmail != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new { Message = "Email already taken" });
+                }
+                try
+                {
+                    var res = SellerService.ChangeEmail(guid, changeEmail);
                     return Request.CreateResponse(HttpStatusCode.OK, res);
                 }
                 catch (Exception ex)

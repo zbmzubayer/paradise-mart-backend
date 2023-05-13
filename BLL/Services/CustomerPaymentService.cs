@@ -20,7 +20,7 @@ namespace BLL.Services
             });
             var mapper = new Mapper(cfg);
             var mapped = mapper.Map<CustomerPayment>(customerPayment);
-            mapped.ExpiredAt = DateTime.UtcNow.AddDays(60);
+            mapped.ExpiredAt = DateTime.Now.AddDays(60);
             return DataAccessFactory.CustomerPaymentData().Create(mapped);
         }
         public static List<CustomerPaymentDTO> Get()
@@ -51,7 +51,7 @@ namespace BLL.Services
             });
             var mapper = new Mapper(cfg);
             var mapped = mapper.Map<CustomerPayment>(customerPayment);
-            mapped.ExpiredAt = DateTime.UtcNow.AddDays(60);
+            mapped.ExpiredAt = DateTime.Now.AddDays(60);
             return DataAccessFactory.CustomerPaymentData().Update(mapped);
         }
         public static bool Delete(int id)

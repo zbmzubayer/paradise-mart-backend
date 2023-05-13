@@ -13,5 +13,6 @@ namespace DAL.Interfaces
         bool UploadPhoto(string guid, string photo);
         bool DeletePhoto(string guid);
         bool ChangePassword(string guid, string password);
+        bool ChangeEmail(string guid, string email);
     }
 }

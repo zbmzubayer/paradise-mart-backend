@@ -66,7 +66,11 @@ namespace DAL.Repos
             admin.Password = password;
             return db.SaveChanges() > 0;
         }
-
-        
+        public bool ChangeEmail(string guid, string email)
+        {
+            var admin = Get(guid);
+            admin.Email = email;
+            return db.SaveChanges() > 0;
+        }
     }
 }

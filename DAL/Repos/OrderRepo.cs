@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repos
 {
-    internal class OrderRepo : Repo, IRepo<Order, string, Order>
+    internal class OrderRepo : Repo, IRepo<Order, string, Order>, IOrderRepo<Order>
     {
         public Order Create(Order obj)
         {
@@ -18,19 +18,36 @@ namespace DAL.Repos
         }
         public List<Order> Get()
         {
-            throw new NotImplementedException();
+            return db.Orders.ToList();
         }
-        public Order Get(string id)
+        public Order Get(string code)
         {
-            throw new NotImplementedException();
+            return db.Orders.FirstOrDefault(o => o.Code == code);
         }
         public Order Update(Order obj)
         {
-            throw new NotImplementedException();
+            var dbOrder = Get(obj.Code);
+            dbOrder.Amount = obj.Amount;
+            db.SaveChanges();
+            return dbOrder;
         }
-        public bool Delete(string id)
+        public bool Delete(string code)
         {
-            throw new NotImplementedException();
+            db.Orders.Remove(Get(code));
+            return db.SaveChanges() > 0;
+        }
+        public bool ProcessOrder(string code, string status)
+        {
+            var dbOrder = Get(code);
+            dbOrder.Status = status;
+            return db.SaveChanges() > 0;
+        }
+        public bool DeliverOrder(string code, string status, DateTime deliveredAt)
+        {
+            var dbOrder = Get(code);
+            dbOrder.Status = status;
+            dbOrder.DeliveredAt = deliveredAt;
+            return db.SaveChanges() > 0;
         }
     }
 }

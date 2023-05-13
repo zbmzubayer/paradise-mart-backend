@@ -39,24 +39,10 @@ namespace BLL.Helpers
             var sellerPhotoPath = rootPath + "/SellerPhotos";
             return UploadPhoto(httpRequest, sellerPhotoPath, id);
         }
-        public static string CompanyUploadLogo(HttpRequest httpRequest, string guid)
+        public static string SellerUploadCompanyLogo(HttpRequest httpRequest, int id)
         {
-            string uniqueFileName = "";
-            foreach (string file in httpRequest.Files)
-            {
-                var posteFile = httpRequest.Files[file];
-                var rootPath = HttpContext.Current.Server.MapPath("~/Uploads/CompanyLogo");
-                if (!Directory.Exists(rootPath))
-                {
-                    Directory.CreateDirectory(rootPath);
-                }
-                var fileExt = System.IO.Path.GetExtension(posteFile.FileName);
-                var unixTimestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-                uniqueFileName = unixTimestamp + fileExt;
-                var filePath = System.IO.Path.Combine(rootPath, uniqueFileName);
-                posteFile.SaveAs(filePath);
-            }
-            return uniqueFileName;
+            var sellerPhotoPath = rootPath + "/CompanyLogos";
+            return UploadPhoto(httpRequest, sellerPhotoPath, id);
         }
         public static string AdminUploadPhoto(HttpRequest httpRequest, int id)
         {
