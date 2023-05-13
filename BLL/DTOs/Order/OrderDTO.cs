@@ -16,7 +16,8 @@ namespace BLL.DTOs.Order
         public string Address { get; set; }
         public double Amount { get; set; }
         public DateTime PlacedAt { get; set; }
-        public DateTime DeliveredAt { get; set; }
+        public DateTime? DeliveredAt { get; set; }
         public int  CustomerId{ get; set; }
+        public List<OrderDetailDTO> OrderDetails { get; set; }
     }
 }
