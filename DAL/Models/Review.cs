@@ -13,7 +13,7 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public int Rating { get; set; }
+        public double Rating { get; set; }
         [Required]
         [StringLength(200)]
         public string Message { get; set; }
