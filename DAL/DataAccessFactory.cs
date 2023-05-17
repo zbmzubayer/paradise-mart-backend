@@ -71,5 +71,25 @@ namespace DAL
         {
             return new CustomerPaymentRepo();
         }
+        public static IRepo<OneTimePassword, int, bool> OTPData()
+        {
+            return new OTPRepo();
+        }
+        public static IOTPRepo<OneTimePassword> OTPIndividualData()
+        {
+            return new OTPRepo();
+        }
+        public static IAuth<Customer> CustomerAuthData()
+        {
+            return new CustomerRepo();
+        }
+        public static IAuth<Seller> SellerAuthData()
+        {
+            return new SellerRepo();
+        }
+        public static IAuth<Admin> AdminAuthData()
+        {
+            return new AdminRepo();
+        }
     }
 }

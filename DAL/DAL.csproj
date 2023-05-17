@@ -52,27 +52,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccessFactory.cs" />
+    <Compile Include="Interfaces\IAuth.cs" />
     <Compile Include="Interfaces\IOrderRepo.cs" />
+    <Compile Include="Interfaces\IOTPRepo.cs" />
     <Compile Include="Interfaces\ISellerRepo.cs" />
     <Compile Include="Interfaces\IUserRepo.cs" />
     <Compile Include="Interfaces\IRepo.cs" />
-    <Compile Include="Migrations\202304241338000_InitDB.cs" />
-    <Compile Include="Migrations\202304241338000_InitDB.designer.cs">
-      <DependentUpon>202304241338000_InitDB.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202305031503428_SaltColumnAddedInUsersTables.cs" />
-    <Compile Include="Migrations\202305031503428_SaltColumnAddedInUsersTables.designer.cs">
-      <DependentUpon>202305031503428_SaltColumnAddedInUsersTables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202305121932132_ReviewTableRatingColumnTypeChanged.cs" />
-    <Compile Include="Migrations\202305121932132_ReviewTableRatingColumnTypeChanged.designer.cs">
-      <DependentUpon>202305121932132_ReviewTableRatingColumnTypeChanged.cs</DependentUpon>
+    <Compile Include="Migrations\202305152019470_InitDB.cs" />
+    <Compile Include="Migrations\202305152019470_InitDB.designer.cs">
+      <DependentUpon>202305152019470_InitDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\CustomerPayment.cs" />
+    <Compile Include="Models\OneTimePassword.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderDetail.cs" />
     <Compile Include="Models\Payment.cs" />
@@ -88,6 +83,7 @@
     <Compile Include="Repos\CustomerRepo.cs" />
     <Compile Include="Repos\OrderDetailRepo.cs" />
     <Compile Include="Repos\OrderRepo.cs" />
+    <Compile Include="Repos\OTPRepo.cs" />
     <Compile Include="Repos\PaymentRepo.cs" />
     <Compile Include="Repos\ProductRepo.cs" />
     <Compile Include="Repos\Repo.cs" />
@@ -99,14 +95,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202304241338000_InitDB.resx">
-      <DependentUpon>202304241338000_InitDB.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202305031503428_SaltColumnAddedInUsersTables.resx">
-      <DependentUpon>202305031503428_SaltColumnAddedInUsersTables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202305121932132_ReviewTableRatingColumnTypeChanged.resx">
-      <DependentUpon>202305121932132_ReviewTableRatingColumnTypeChanged.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202305152019470_InitDB.resx">
+      <DependentUpon>202305152019470_InitDB.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

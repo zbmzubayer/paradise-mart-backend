@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using BLL.DTOs.Order;
 using BLL.DTOs.Category;
 using BLL.DTOs.Customer;
+using BLL.DTOs.Product;
 
 namespace BLL.Services
 {

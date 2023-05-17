@@ -21,5 +21,6 @@ namespace DAL
         public DbSet<Payment> Payments { get; set; }
         public DbSet<CustomerPayment> CustomerPayments { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<OneTimePassword> OneTimePasswords { get; set; }
     }
 }

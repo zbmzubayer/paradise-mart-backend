@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BLL.DTOs.Product;
 
 namespace BLL.DTOs.Order
 {

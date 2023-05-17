@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -48,6 +50,23 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, new { Token = token });
             }
             return Request.CreateResponse(HttpStatusCode.OK, "Invalid Credentials");
+        }
+        // Extract user info from JWT token
+        [HttpGet]
+        [Authorize]
+        [Route("api/auth/login/info")]
+        public HttpResponseMessage GetCurrentUser()
+        {
+            var identity = HttpContext.Current.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                var id = userClaims.FirstOrDefault(O => O.Type == ClaimTypes.NameIdentifier)?.Value;
+                var email = userClaims.FirstOrDefault(O => O.Type == ClaimTypes.Email)?.Value;
+                var role = userClaims.FirstOrDefault(O => O.Type == ClaimTypes.Role)?.Value;
+                return Request.CreateResponse(HttpStatusCode.OK, new { Id = id, Email = email, Role = role });
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
         }
     }
 }
