@@ -49,11 +49,14 @@ namespace DAL.Models
         public virtual ICollection<Review> Reviews { get; set; }
         // Customer (1) <---> (*) CustomerPayment
         public virtual ICollection<CustomerPayment> CustomerPayments { get; set; }
+        // Customer (1) <---> (*) OTP
+        public virtual ICollection<OneTimePassword> OneTimePasswords { get; set; }
         public Customer()
         {
             Orders = new List<Order>();
             Reviews = new List<Review>();
             CustomerPayments = new List<CustomerPayment>();
+            OneTimePasswords = new List<OneTimePassword>();
         }
     }
 }

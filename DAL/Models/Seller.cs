@@ -52,9 +52,12 @@ namespace DAL.Models
         public DateTime? ModifiedAt { get; set; }
         // Seller (1) <---> (*) Product
         public virtual ICollection<Product> Products { get; set; }
+        // Seller (1) <---> (*) OTP
+       /* public virtual ICollection<OneTimePassword> OneTimePasswords { get; set; }
         public Seller()
         {
             Products = new List<Product>();
-        }
+            OneTimePasswords = new List<OneTimePassword>();
+        }*/
     }
 }

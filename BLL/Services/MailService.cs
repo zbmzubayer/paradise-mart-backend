@@ -22,8 +22,6 @@ namespace BLL.Services
             EnableSsl = true,
             Credentials = new NetworkCredential(fromAddress, emailPassword)
         };
-        public static int otp;
-
         public static void SendMail(string toAddress, string subject, string body)
         {
             try
@@ -60,14 +58,15 @@ Follow the terms and conditions properly.
 Good luck!!!";
             SendMail(toAddress, subject, body);
         }
-        public static void ForgotPassword(string name, string toAddress)
+        public static string ForgotPassword(string name, string toAddress)
         {
             Random rand = new Random();
-            otp = rand.Next(10000, 100000);
+            string otp = rand.Next(1000000, 10000000).ToString();
             string subject = "Paradise Mart - Forgot Password";
             string body = $@"Hi {name},
 Your OTP is {otp}.";
             SendMail(toAddress, subject, body);
+            return otp;
         }
     }
 }

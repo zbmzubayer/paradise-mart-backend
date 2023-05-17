@@ -41,5 +41,11 @@ namespace DAL.Models
         [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
+       /* // Admin (1) <---> (*) OTP
+        public virtual ICollection<OneTimePassword> OneTimePasswords{ get; set; }
+        public Admin()
+        {
+            OneTimePasswords = new List<OneTimePassword>();
+        }*/
     }
 }
