@@ -12,9 +12,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AppLayer.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class SellerController : ApiController
     {
         [HttpPost]
@@ -36,6 +38,7 @@ namespace AppLayer.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("api/sellers")]
         public HttpResponseMessage GetAll()
@@ -192,6 +195,30 @@ namespace AppLayer.Controllers
                     var rootPath = HttpContext.Current.Server.MapPath("/Uploads/SellerPhotos/");
                     HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
                     var fileFullPath = System.IO.Path.Combine(rootPath, user.Photo);
+                    byte[] bfile = System.IO.File.ReadAllBytes(fileFullPath);
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream(bfile);
+                    response.Content = new ByteArrayContent(bfile);
+                    // response.Content = new StreamContent(ms);
+                    //response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                    //response.Content.Headers.ContentDisposition.FileName = file;
+                    return response;
+                }
+            }
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+        [HttpGet]
+        [Route("api/seller/logo/{guid}")]
+        public HttpResponseMessage GetLogo(string guid)
+        {
+            var user = SellerService.Get(guid);
+            if (user != null)
+            {
+                if (user.CompanyLogo != null)
+                {
+                    var rootPath = HttpContext.Current.Server.MapPath("/Uploads/CompanyLogos/");
+                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+                    var fileFullPath = System.IO.Path.Combine(rootPath, user.CompanyLogo);
                     byte[] bfile = System.IO.File.ReadAllBytes(fileFullPath);
                     System.IO.MemoryStream ms = new System.IO.MemoryStream(bfile);
                     response.Content = new ByteArrayContent(bfile);

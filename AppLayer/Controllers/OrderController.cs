@@ -6,9 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AppLayer.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class OrderController : ApiController
     {
         [HttpPost]
@@ -25,6 +27,7 @@ namespace AppLayer.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("api/orders")]
         public HttpResponseMessage GetAll()
@@ -53,6 +56,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("api/order/delete/{code}")]
         public HttpResponseMessage Delete(string code)
@@ -94,6 +98,7 @@ namespace AppLayer.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("api/order/{code}/deliver")]
         public HttpResponseMessage DeliverOrder(string code)

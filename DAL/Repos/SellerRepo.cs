@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repos
 {
-    internal class SellerRepo : Repo, IRepo<Seller, string, bool>, IUserRepo<Seller>, ISellerRepo<Seller>
+    internal class SellerRepo : Repo, IRepo<Seller, string, bool>, IUserRepo<Seller>, ISellerRepo<Seller>, IAuth<Seller>
     {
         public bool Create(Seller obj)
         {
@@ -80,6 +80,11 @@ namespace DAL.Repos
             var seller = Get(guid);
             seller.Email = email;
             return db.SaveChanges() > 0;
+        }
+
+        public Seller AuthenticateUser(string email, string password)
+        {
+            return db.Sellers.SingleOrDefault(c => c.Email.Equals(email) && c.Password.Equals(password));
         }
     }
 }

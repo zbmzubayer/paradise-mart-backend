@@ -6,12 +6,15 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AppLayer.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class CategoryController : ApiController
     {
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("api/category/create")]
         public HttpResponseMessage Create(CategoryDTO category)
@@ -54,6 +57,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, ex);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("api/category/update")]
         public HttpResponseMessage Update(CategoryDTO category)
@@ -76,6 +80,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { Message = "Category does not exist" });
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("api/category/delete/{id}")]
         public HttpResponseMessage Delete(int id)

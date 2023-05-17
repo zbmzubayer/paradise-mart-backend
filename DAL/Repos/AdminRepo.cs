@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repos
 {
-    internal class AdminRepo : Repo, IRepo<Admin, string, bool>, IUserRepo<Admin>
+    internal class AdminRepo : Repo, IRepo<Admin, string, bool>, IUserRepo<Admin>, IAuth<Admin>
     {
         public bool Create(Admin obj)
         {
@@ -71,6 +71,10 @@ namespace DAL.Repos
             var admin = Get(guid);
             admin.Email = email;
             return db.SaveChanges() > 0;
+        }
+        public Admin AuthenticateUser(string email, string password)
+        {
+            return db.Admins.SingleOrDefault(c => c.Email.Equals(email) && c.Password.Equals(password));
         }
     }
 }

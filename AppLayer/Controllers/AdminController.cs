@@ -12,9 +12,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace AppLayer.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class AdminController : ApiController
     {
         [HttpPost]
@@ -36,6 +38,7 @@ namespace AppLayer.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("api/admins")]
         public HttpResponseMessage GetAll()
@@ -50,6 +53,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("api/admins/{guid}")]
         public HttpResponseMessage GetByGuid(string guid)
@@ -64,6 +68,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         [Route("api/admin/update")]
         public HttpResponseMessage Update(AdminDTO admin)
@@ -86,6 +91,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { Message = "Admin not found" });
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("api/admin/delete/{guid}")]
         public HttpResponseMessage Delete(string guid)
@@ -109,6 +115,7 @@ namespace AppLayer.Controllers
             }
         }
         // Others
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("api/admin/photo/upload/{guid}")]
         public HttpResponseMessage FileUpload(string guid)
@@ -137,6 +144,7 @@ namespace AppLayer.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("api/admin/photo/{guid}")]
         public HttpResponseMessage GetPhoto(string guid)
@@ -161,6 +169,7 @@ namespace AppLayer.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("api/admin/photo/delete/{guid}")]
         public HttpResponseMessage DeletePhoto(string guid)
@@ -181,6 +190,7 @@ namespace AppLayer.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPatch]
         [Route("api/admin/change-password/{guid}")]
         public HttpResponseMessage ChangePassword(string guid, ChangePassDTO changePass)
@@ -203,6 +213,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpPatch]
         [Route("api/admin/change-email/{guid}")]
         public HttpResponseMessage ChangeEmail(string guid, ChangeEmailDTO changeEmail)

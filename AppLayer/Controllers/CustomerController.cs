@@ -12,9 +12,13 @@ using System.Web.Http;
 using BLL.Helpers;
 using System.Net.Http.Headers;
 using System.IO;
+using BLL.DTOs.OTP;
+using System.Security.Claims;
+using System.Web.Http.Cors;
 
 namespace AppLayer.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class CustomerController : ApiController
     {
         [HttpPost]
@@ -36,6 +40,7 @@ namespace AppLayer.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("api/customers")]
         public HttpResponseMessage GetAll()
@@ -50,6 +55,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
+        [Authorize(Roles = "Customer, Admin")]
         [HttpGet]
         [Route("api/customers/{guid}")]
         public HttpResponseMessage GetByGuid(string guid)
@@ -64,6 +70,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
             }
         }
+        [Authorize(Roles = "Customer, Admin")]
         [HttpPut]
         [Route("api/customer/update")]
         public HttpResponseMessage Update(CustomerDTO customer)
@@ -86,6 +93,7 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { Message = "User Not found" });
             }
         }
+        [Authorize(Roles = "Customer, Admin")]
         [HttpDelete]
         [Route("api/customer/delete/{guid}")]
         public HttpResponseMessage Delete(string guid)
@@ -124,6 +132,7 @@ namespace AppLayer.Controllers
             }
         }
         // Customer + Reviews
+        [Authorize(Roles = "Customer, Admin")]
         [HttpGet]
         [Route("api/customers/{guid}/reviews")]
         public HttpResponseMessage GetWithReviews(string guid)
@@ -139,6 +148,7 @@ namespace AppLayer.Controllers
             }
         }
         // Customer + CustomerPayments
+        [Authorize(Roles = "Customer, Admin")]
         [HttpGet]
         [Route("api/customers/{guid}/customer-payments")]
         public HttpResponseMessage GetWithCustomerPayments(string guid)
@@ -154,6 +164,7 @@ namespace AppLayer.Controllers
             }
         }
         // Others
+        [Authorize(Roles = "Customer, Admin")]
         [HttpPost]
         [Route("api/customer/photo/upload/{guid}")]
         public HttpResponseMessage FileUpload(string guid)
@@ -257,12 +268,27 @@ namespace AppLayer.Controllers
         public HttpResponseMessage ForgotPassword(ForgotPassDTO forgotPass)
         {
             var dbCustomer = CustomerService.GetByEmail(forgotPass.Email);
-            if (dbCustomer == null)
+            if (dbCustomer != null)
             {
-                return Request.CreateResponse(HttpStatusCode.NotFound, new { Message = "Invalid Email" });
+                var otpDto = new OTPDTO() { CustomerId = dbCustomer.Id};
+                otpDto.CustomerId = dbCustomer.Id;
+                otpDto.OtpCode = MailService.ForgotPassword(dbCustomer.Name, dbCustomer.Email);
+                OTPService.Create(otpDto);
+                return Request.CreateResponse(HttpStatusCode.OK, new { Message = "OTP has been sent"});
             }
-            MailService.ForgotPassword(dbCustomer.Name, dbCustomer.Email);
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.NotFound, new { Message = "Invalid Email" });
+        }
+
+        [HttpPost]
+        [Route("api/customer/verify-otp")]
+        public HttpResponseMessage VerifyOtp(VerifyOtpDTO verifyOtp)
+        {
+            var res = OTPService.VerifyOtp(verifyOtp.Otp);
+            if(res)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, "Otp verified successfully");
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, "Invalid Otp");
         }
         [HttpPatch]
         [Route("api/customer/change-email/{guid}")]
