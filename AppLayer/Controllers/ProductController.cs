@@ -100,5 +100,19 @@ namespace AppLayer.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, new { Message = "Product Not found" });
             }
         }
+        [HttpGet]
+        [Route("api/products/{url}/all")]
+        public HttpResponseMessage GetAllInfo(string url)
+        {
+            try
+            {
+                var data = ProductService.GetAllInfo(url);
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+        }
     }
 }

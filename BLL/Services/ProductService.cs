@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BLL.DTOs.Customer;
 using BLL.DTOs.Seller;
+using BLL.DTOs.Review;
 
 namespace BLL.Services
 {
@@ -72,7 +73,18 @@ namespace BLL.Services
         {
             return DataAccessFactory.ProductData().Delete(url);
         }
-        // Others
-        
+        // Product + Seller + Reviews
+        public static ProductAllInfoDTO GetAllInfo(string url)
+        {
+            var data = DataAccessFactory.ProductData().Get(url);
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Product, ProductAllInfoDTO>();
+                c.CreateMap<Seller, SellerDTO>();
+                c.CreateMap<Review, ReviewDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            return mapper.Map<ProductAllInfoDTO>(data);
+        }
     }
 }
